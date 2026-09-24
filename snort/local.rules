@@ -1,0 +1,7 @@
+alert icmp $EXTERNAL_NET any -> $HOME_NET any (msg:"PROJECT ICMP Ping Detected"; sid:2000001; rev:1;)
+alert tcp $EXTERNAL_NET any -> $HOME_NET 4280 (msg:"PROJECT DVWA TCP Connection Attempt"; flags:S; sid:2000002; rev:3;)
+alert tcp $EXTERNAL_NET any -> $HOME_NET any (msg:"PROJECT Possible TCP SYN Scan"; flags:S; detection_filter:track by_src,count 5,seconds 10; sid:2000003; rev:1;)
+alert tcp $EXTERNAL_NET any -> $HOME_NET 4280 (msg:"PROJECT Possible SQL Injection - UNION SELECT"; flow:to_server,established; content:"UNION",nocase; content:"SELECT",nocase; sid:2000004; rev:3;)
+alert tcp $EXTERNAL_NET any -> $HOME_NET 4280 (msg:"PROJECT Possible Command Injection - WHOAMI"; flow:to_server,established; http_client_body; content:"whoami",nocase; priority:1; sid:2000005; rev:2;)
+alert udp 192.168.20.10 any -> any 53 (msg:"PROJECT DNS Query Detected"; sid:2000006; rev:6;)
+alert tcp $EXTERNAL_NET any -> $HOME_NET 4280 (msg:"PROJECT Repeated DVWA Login POST Requests"; flow:to_server,established; http_method; content:"POST"; http_uri; content:"/login.php",nocase; detection_filter:track by_src,count 5,seconds 30; priority:2; sid:2000007; rev:3;)
